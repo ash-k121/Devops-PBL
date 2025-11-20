@@ -31,10 +31,10 @@ jobs:
     - name: Build Docker images
       shell: powershell
       run: |
-        docker build -t analytics:latest ./analytics-service
-        docker build -t api-gateway:latest ./api-gateway
-        docker build -t redirect:latest ./redirect-service
-        docker build -t shortener:latest ./shortener-service
+        docker build -t analytics:latest ./url-shortener/shortener-service
+        docker build -t api-gateway:latest ./url-shortener/api-gateway
+        docker build -t redirect:latest ./url-shortener/redirect-service
+        docker build -t shortener:latest ./url-shortener/shortener-service
 
     - name: Unset docker-env
       shell: powershell
@@ -45,4 +45,5 @@ jobs:
       shell: powershell
       run: |
         kubectl apply -f .\k8s\
+
 
