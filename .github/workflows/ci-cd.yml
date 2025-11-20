@@ -35,15 +35,17 @@ jobs:
         docker build -t api-gateway:latest ./url-shortener/api-gateway
         docker build -t redirect:latest ./url-shortener/redirect-service
         docker build -t shortener:latest ./url-shortener/shortener-service
-
+     
     - name: Unset docker-env
       shell: powershell
       run: |
-        & minikube -p minikube docker-env --unset --shell powershell | Invoke-Expression
+        & minikube -p minikube docker-env --unset --shell powershell 2>$null | Out-Null
+
 
     - name: Deploy to Kubernetes
       shell: powershell
       run: |
         kubectl apply -f .\k8s\
+
 
 
