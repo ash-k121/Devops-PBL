@@ -6,13 +6,13 @@ on:
 
 jobs:
   deploy:
-    runs-on: self-hosted   # your own PC
+    runs-on: self-hosted
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Ensure Minikube is running (PowerShell)
+    - name: Ensure Minikube is running
       shell: powershell
       run: |
         $status = minikube status 2>&1
@@ -23,10 +23,13 @@ jobs:
           Write-Host "Minikube is already running."
         }
 
-
+    - name: Configure Minikube Docker env
+      shell: powershell
+      run: |
+        & minikube -p minikube docker-env --shell powershell | Invoke-Expression
 
     - name: Build Docker images
-      shell: pwsh
+      shell: powershell
       run: |
         docker build -t shortener:latest .\shortener-service
         docker build -t redirect:latest .\redirect-service
@@ -38,10 +41,7 @@ jobs:
       run: |
         & minikube -p minikube docker-env --unset --shell powershell | Invoke-Expression
 
-
     - name: Deploy to Kubernetes
-      shell: pwsh
+      shell: powershell
       run: |
         kubectl apply -f .\k8s\
-
-
