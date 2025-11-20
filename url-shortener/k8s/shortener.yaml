@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: shortener }
+spec:
+  replicas: 2
+  selector: { matchLabels: { app: shortener } }
+  template:
+    metadata: { labels: { app: shortener } }
+    spec:
+      containers:
+      - name: shortener
+        image: shortener:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: REDIS_HOST
+          value: redis
+        - name: DOMAIN
+          value: localhost
+        ports: [{ containerPort: 8000 }]
+---
+apiVersion: v1
+kind: Service
+metadata: { name: shortener }
+spec:
+  selector: { app: shortener }
+  ports: [{ port: 8000, targetPort: 8000 }]
+  type: ClusterIP
