@@ -45,7 +45,8 @@ jobs:
     - name: Deploy to Kubernetes
       shell: powershell
       run: |
-        kubectl apply -f .\k8s\
+        kubectl apply -f .\url-shortener\k8s\
+
 
 
 
