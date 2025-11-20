@@ -12,14 +12,17 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Configure Minikube Docker env (PowerShell)
+    - name: Ensure Minikube is running (PowerShell)
       shell: powershell
       run: |
-        # ensure minikube is running (optional)
-        minikube status || minikube start
+        $status = minikube status 2>&1
+        if ($status -match "Stopped" -or $status -match "Does Not Exist" -or $status -match "Unavailable") {
+          Write-Host "Starting Minikube..."
+          minikube start
+        } else {
+          Write-Host "Minikube is already running."
+        }
 
-        # make docker CLI use minikube's docker daemon for the current shell
-        & minikube -p minikube docker-env --shell powershell | Invoke-Expression
 
 
     - name: Build Docker images
@@ -40,4 +43,5 @@ jobs:
       shell: pwsh
       run: |
         kubectl apply -f .\k8s\
+
 
